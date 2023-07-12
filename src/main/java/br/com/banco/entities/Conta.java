@@ -11,7 +11,8 @@ import javax.persistence.*;
 @Setter
 public class Conta {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id_conta")
     private Long id;
 
     @Column(name="nome_responsavel", length=50, nullable=false, unique=false)
