@@ -1,16 +1,11 @@
 package br.com.banco.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "transferencia")
-@Getter
-@Setter
 public class Transferencia {
 
     @Id
@@ -32,4 +27,52 @@ public class Transferencia {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id", nullable = false)
     private Conta contaId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public OffsetDateTime getDataTransferencia() {
+        return dataTransferencia;
+    }
+
+    public void setDataTransferencia(OffsetDateTime dataTransferencia) {
+        this.dataTransferencia = dataTransferencia;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getNomeOperadorTransacao() {
+        return nomeOperadorTransacao;
+    }
+
+    public void setNomeOperadorTransacao(String nomeOperadorTransacao) {
+        this.nomeOperadorTransacao = nomeOperadorTransacao;
+    }
+
+    public Conta getContaId() {
+        return contaId;
+    }
+
+    public void setContaId(Conta contaId) {
+        this.contaId = contaId;
+    }
 }

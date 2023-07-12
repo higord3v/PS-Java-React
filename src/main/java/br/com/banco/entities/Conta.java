@@ -1,14 +1,9 @@
 package br.com.banco.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name="conta")
-@Getter
-@Setter
 public class Conta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,4 +12,20 @@ public class Conta {
 
     @Column(name="nome_responsavel", length=50, nullable=false, unique=false)
     private String nome;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }
