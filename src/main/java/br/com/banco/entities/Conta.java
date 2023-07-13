@@ -1,6 +1,7 @@
 package br.com.banco.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="conta")
@@ -12,6 +13,9 @@ public class Conta {
 
     @Column(name="nome_responsavel", length=50, nullable=false, unique=false)
     private String nome;
+
+    @OneToMany(mappedBy = "contaId", cascade = CascadeType.ALL)
+    private List<Transferencia> transferencias;
 
     public Long getId() {
         return id;
