@@ -14,7 +14,7 @@ public class Conta {
     @Column(name="nome_responsavel", length=50, nullable=false, unique=false)
     private String nome;
 
-    @OneToMany(mappedBy = "contaId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL)
     private List<Transferencia> transferencias;
 
     public Long getId() {
