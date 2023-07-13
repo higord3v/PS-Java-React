@@ -1,7 +1,10 @@
 package br.com.banco.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -26,7 +29,8 @@ public class Transferencia {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id", nullable = false)
-    private Conta contaId;
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Conta conta;
 
     public Long getId() {
         return id;
@@ -68,11 +72,11 @@ public class Transferencia {
         this.nomeOperadorTransacao = nomeOperadorTransacao;
     }
 
-    public Conta getContaId() {
-        return contaId;
+    public Conta getConta() {
+        return this.conta;
     }
 
-    public void setContaId(Conta contaId) {
-        this.contaId = contaId;
+    public void setConta(Long contaId) {
+        this.conta = conta;
     }
 }
