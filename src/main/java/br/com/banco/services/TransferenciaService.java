@@ -1,10 +1,13 @@
 package br.com.banco.services;
 
+import br.com.banco.dtos.TransferenciaDTO;
 import br.com.banco.entities.Transferencia;
+import br.com.banco.mappers.TransferenciaMapper;
 import br.com.banco.repositories.TransferenciaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,5 +39,22 @@ public class TransferenciaService {
                 id,
                 nome_operador_transacao.get()
         );
+    }
+
+    public TransferenciaDTO encontrarUmaTransferencia(Long id) {
+        Transferencia transferencia = this.repository.findById(id).get();
+        TransferenciaDTO dto = TransferenciaMapper.INSTANCE.transferenciaToTransferenciaDto(transferencia);
+        return dto;
+    }
+
+    public TransferenciaDTO criarTransferencia(TransferenciaDTO transferencia) {
+        Transferencia dtoTotransferencia = TransferenciaMapper.INSTANCE.transferenciaDtoToTransferencia(transferencia);
+        Transferencia transferenciaSalva = this.repository.save(dtoTotransferencia);
+        TransferenciaDTO dto = TransferenciaMapper.INSTANCE.transferenciaToTransferenciaDto(transferenciaSalva);
+        return dto;
+    }
+
+    public void deletarTransferencia(Long id) {
+        this.repository.deleteById(id);
     }
 }

@@ -1,6 +1,10 @@
 package br.com.banco.entities;
 
+import com.sun.istack.NotNull;
+import net.bytebuddy.implementation.bind.annotation.Empty;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
@@ -12,6 +16,7 @@ public class Conta {
     private Long id;
 
     @Column(name="nome_responsavel", length=50, nullable=false, unique=false)
+    @NotBlank(message = "O nome é obrigatório")
     private String nome;
 
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL)

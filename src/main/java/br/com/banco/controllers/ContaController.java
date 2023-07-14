@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public class ContaController {
     }
 
     @PostMapping
-    public ResponseEntity<Conta> create(@RequestBody Conta conta) {
+    public ResponseEntity<Conta> create(@Valid @RequestBody Conta conta) throws Exception {
         Conta contaCriada = this.contaService.criarConta(conta);
         return ResponseEntity.status(HttpStatus.CREATED).body(conta);
     }

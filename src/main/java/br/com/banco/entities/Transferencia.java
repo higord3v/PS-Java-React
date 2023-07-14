@@ -3,8 +3,9 @@ package br.com.banco.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -16,11 +17,14 @@ public class Transferencia {
     private Long id;
 
     @Column(nullable = false, name = "data_transferencia")
+    @NotNull
     private OffsetDateTime dataTransferencia;
 
     @Column(name = "valor", precision=20, scale=2)
+    @NotNull
     private BigDecimal valor;
 
+    @NotBlank
     @Column(name = "tipo", nullable = false)
     private String tipo;
 
@@ -30,6 +34,7 @@ public class Transferencia {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id", nullable = false)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @NotNull
     private Conta conta;
 
     public Long getId() {
@@ -76,7 +81,7 @@ public class Transferencia {
         return this.conta;
     }
 
-    public void setConta(Long contaId) {
+    public void setConta(Conta conta) {
         this.conta = conta;
     }
 }
