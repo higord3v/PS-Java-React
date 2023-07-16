@@ -2,6 +2,7 @@ package br.com.banco.services;
 
 import br.com.banco.dtos.TransferenciaDTO;
 import br.com.banco.entities.Transferencia;
+import br.com.banco.exceptions.TransferenciaNaoEncontradaException;
 import br.com.banco.mappers.TransferenciaMapper;
 import br.com.banco.repositories.TransferenciaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,17 @@ import java.util.Optional;
 
 @Service
 public class TransferenciaService {
+
     @Autowired
     private TransferenciaRepository repository;
+
+    public TransferenciaRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(TransferenciaRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Transferencia> encontrarTransferencias(Long id, Optional<String> nome_operador_transacao, Optional<String> inicio, Optional<String> fim) {
         if (nome_operador_transacao.get().isEmpty()) {
@@ -41,9 +51,10 @@ public class TransferenciaService {
         );
     }
 
-    public TransferenciaDTO encontrarUmaTransferencia(Long id) {
-        Transferencia transferencia = this.repository.findById(id).get();
-        TransferenciaDTO dto = TransferenciaMapper.INSTANCE.transferenciaToTransferenciaDto(transferencia);
+    public TransferenciaDTO encontrarUmaTransferencia(Long id) throws TransferenciaNaoEncontradaException {
+        Optional<Transferencia> transferencia = this.repository.findById(id);
+        if (!transferencia.isPresent()) throw new TransferenciaNaoEncontradaException(id);
+        TransferenciaDTO dto = TransferenciaMapper.INSTANCE.transferenciaToTransferenciaDto(transferencia.get());
         return dto;
     }
 
@@ -54,7 +65,9 @@ public class TransferenciaService {
         return dto;
     }
 
-    public void deletarTransferencia(Long id) {
+    public void deletarTransferencia(Long id) throws TransferenciaNaoEncontradaException {
+        Optional<Transferencia> transferencia = this.repository.findById(id);
+        if (!transferencia.isPresent()) throw new TransferenciaNaoEncontradaException(id);
         this.repository.deleteById(id);
     }
 }

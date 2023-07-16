@@ -1,16 +1,28 @@
 package br.com.banco.dtos;
 
 import br.com.banco.entities.Conta;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 public class TransferenciaDTO {
+
+    public TransferenciaDTO() {
+
+    }
+    public TransferenciaDTO(OffsetDateTime dataTransferencia, BigDecimal valor, String tipo, String nomeOperadorTransacao, Conta conta) {
+        this.dataTransferencia = dataTransferencia;
+        this.valor = valor;
+        this.tipo = tipo;
+        this.nomeOperadorTransacao = nomeOperadorTransacao;
+        this.conta = conta;
+    }
 
     @NotNull(message = "campo dataTransferencia é obrigatório")
     private OffsetDateTime dataTransferencia;
@@ -25,14 +37,6 @@ public class TransferenciaDTO {
     private String nomeOperadorTransacao;
     @NotNull(message = "campo conta é obrigatório")
     private Conta conta;
-
-    public TransferenciaDTO(OffsetDateTime dataTransferencia, BigDecimal valor, String tipo, String nomeOperadorTransacao, Conta conta) {
-        this.dataTransferencia = dataTransferencia;
-        this.valor = valor;
-        this.tipo = tipo;
-        this.nomeOperadorTransacao = nomeOperadorTransacao;
-        this.conta = conta;
-    }
 
     public OffsetDateTime getDataTransferencia() {
         return dataTransferencia;

@@ -1,5 +1,9 @@
 package br.com.banco.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import net.bytebuddy.implementation.bind.annotation.Empty;
 
@@ -9,6 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name="conta")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Conta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +24,18 @@ public class Conta {
     @NotBlank(message = "O nome é obrigatório")
     private String nome;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL)
     private List<Transferencia> transferencias;
+
+    public Conta() {
+
+    }
+    @JsonCreator
+    public Conta(@JsonProperty("id") Long id, @JsonProperty("nome") String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
 
     public Long getId() {
         return id;

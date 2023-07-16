@@ -14,6 +14,15 @@ public class ContaService {
 
     @Autowired
     private ContaRepository repository;
+
+    public ContaRepository getRepository() {
+        return repository;
+    }
+
+    public void setRepository(ContaRepository repository) {
+        this.repository = repository;
+    }
+
     public List<Conta> buscarContas() {
         return this.repository.findAll();
     }

@@ -1,6 +1,9 @@
 package br.com.banco.entities;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +14,24 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "transferencia")
 public class Transferencia {
+    public Transferencia() {
+
+    }
+
+    @JsonCreator
+    public Transferencia(@JsonProperty("id") Long id,
+                         @JsonProperty("dataTransferencia") OffsetDateTime dataTransferencia,
+                         @JsonProperty("valor") BigDecimal valor,
+                         @JsonProperty("tipo") String tipo,
+                         @JsonProperty("nomeOperadorTransacao") String nomeOperadorTransacao,
+                         @JsonProperty("conta") Conta conta) {
+        this.id = id;
+        this.dataTransferencia = dataTransferencia;
+        this.valor = valor;
+        this.tipo = tipo;
+        this.nomeOperadorTransacao = nomeOperadorTransacao;
+        this.conta = conta;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +54,6 @@ public class Transferencia {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @NotNull
     private Conta conta;
 

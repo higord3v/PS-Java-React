@@ -4,6 +4,7 @@ import br.com.banco.dtos.TransferenciaDTO;
 import br.com.banco.entities.Conta;
 import br.com.banco.entities.Transferencia;
 import br.com.banco.exceptions.ContaNaoEncontradaException;
+import br.com.banco.exceptions.TransferenciaNaoEncontradaException;
 import br.com.banco.mappers.TransferenciaMapper;
 import br.com.banco.services.ContaService;
 import br.com.banco.services.TransferenciaService;
@@ -27,7 +28,7 @@ public class TransferenciaController {
     @Autowired
     private ContaService contaService;
 
-    @PostMapping
+    @PostMapping(consumes = {"application/json"})
     public ResponseEntity<TransferenciaDTO> create(@Valid @RequestBody TransferenciaDTO transferenciaDTO) throws ContaNaoEncontradaException {
         Conta conta = this.contaService.encontrarConta(transferenciaDTO.getConta().getId());
         TransferenciaDTO dtoResposta = this.transferenciaService.criarTransferencia(transferenciaDTO);
@@ -45,14 +46,14 @@ public class TransferenciaController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<TransferenciaDTO> indexOne(@PathVariable Long id) {
+    public ResponseEntity<TransferenciaDTO> indexOne(@PathVariable Long id) throws TransferenciaNaoEncontradaException {
         TransferenciaDTO transferencia = this.transferenciaService.encontrarUmaTransferencia(id);
         return ResponseEntity.status(HttpStatus.OK).body(transferencia);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> destroy(@PathVariable Long id) {
-        this.transferenciaService.encontrarUmaTransferencia(id);
+    public ResponseEntity<Void> destroy(@PathVariable Long id) throws TransferenciaNaoEncontradaException {
+        this.transferenciaService.deletarTransferencia(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
