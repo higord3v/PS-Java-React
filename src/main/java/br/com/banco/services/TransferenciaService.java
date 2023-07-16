@@ -16,8 +16,11 @@ import java.util.Optional;
 @Service
 public class TransferenciaService {
 
-    @Autowired
     private TransferenciaRepository repository;
+
+    TransferenciaService(TransferenciaRepository repository) {
+        this.repository = repository;
+    }
 
     public TransferenciaRepository getRepository() {
         return repository;
@@ -58,11 +61,9 @@ public class TransferenciaService {
         return dto;
     }
 
-    public TransferenciaDTO criarTransferencia(TransferenciaDTO transferencia) {
-        Transferencia dtoTotransferencia = TransferenciaMapper.INSTANCE.transferenciaDtoToTransferencia(transferencia);
-        Transferencia transferenciaSalva = this.repository.save(dtoTotransferencia);
-        TransferenciaDTO dto = TransferenciaMapper.INSTANCE.transferenciaToTransferenciaDto(transferenciaSalva);
-        return dto;
+    public Transferencia criarTransferencia(Transferencia transferencia) {
+        Transferencia transferenciaSalva = this.repository.save(transferencia);
+        return transferenciaSalva;
     }
 
     public void deletarTransferencia(Long id) throws TransferenciaNaoEncontradaException {

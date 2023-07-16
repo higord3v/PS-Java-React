@@ -31,8 +31,11 @@ public class TransferenciaController {
     @PostMapping(consumes = {"application/json"})
     public ResponseEntity<TransferenciaDTO> create(@Valid @RequestBody TransferenciaDTO transferenciaDTO) throws ContaNaoEncontradaException {
         Conta conta = this.contaService.encontrarConta(transferenciaDTO.getConta().getId());
-        TransferenciaDTO dtoResposta = this.transferenciaService.criarTransferencia(transferenciaDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dtoResposta);
+        Transferencia dtoTotransferencia = TransferenciaMapper.INSTANCE.transferenciaDtoToTransferencia(transferenciaDTO);
+        Transferencia transferencia = this.transferenciaService.criarTransferencia(dtoTotransferencia);
+
+        TransferenciaDTO dto = TransferenciaMapper.INSTANCE.transferenciaToTransferenciaDto(transferencia);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @GetMapping

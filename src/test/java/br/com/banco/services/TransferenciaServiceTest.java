@@ -5,13 +5,12 @@ import br.com.banco.entities.Conta;
 import br.com.banco.entities.Transferencia;
 import br.com.banco.exceptions.TransferenciaNaoEncontradaException;
 import br.com.banco.mappers.TransferenciaMapper;
+import br.com.banco.repositories.ContaRepository;
 import br.com.banco.repositories.TransferenciaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -19,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class TransferenciaServiceTest {
@@ -29,6 +27,10 @@ class TransferenciaServiceTest {
 
     private TransferenciaService transferenciaService;
 
+    private ContaService contaService;
+    @Mock
+    private ContaRepository contaRepository;
+
     // Create a mock instance of Transferencia
     @Mock
     Transferencia transferenciaMock;
@@ -36,8 +38,9 @@ class TransferenciaServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        transferenciaService = new TransferenciaService();
-        transferenciaService.setRepository(repository);
+        transferenciaService = new TransferenciaService(repository);
+        contaService = new ContaService();
+        contaService.setRepository(contaRepository);
     }
 
     @Test
@@ -119,7 +122,8 @@ class TransferenciaServiceTest {
     void testCriarTransferencia() {
         // Mock data
         Conta conta = new Conta(3L, "Higor");
-        TransferenciaDTO transferenciaDTO = new TransferenciaDTO(
+        Transferencia transferencia = new Transferencia(
+                12L,
                 OffsetDateTime.now(),
                 BigDecimal.TEN,
                 "Description",
@@ -127,11 +131,11 @@ class TransferenciaServiceTest {
                 conta
         );
         TransferenciaDTO expectedDTO = new TransferenciaDTO(
-                transferenciaDTO.getDataTransferencia(),
-                transferenciaDTO.getValor(),
-                transferenciaDTO.getTipo(),
-                transferenciaDTO.getNomeOperadorTransacao(),
-                transferenciaDTO.getConta()
+                transferencia.getDataTransferencia(),
+                transferencia.getValor(),
+                transferencia.getTipo(),
+                transferencia.getNomeOperadorTransacao(),
+                transferencia.getConta()
         );
 
         // Mock the repository behavior
@@ -141,7 +145,7 @@ class TransferenciaServiceTest {
         });
 
         // Invoke the service method
-        TransferenciaDTO result = this.transferenciaService.criarTransferencia(transferenciaDTO);
+        Transferencia result = this.transferenciaService.criarTransferencia(transferencia);
 
         // Verify the result is not null
         assertNotNull(result, "The created TransferenciaDTO should not be null.");
@@ -155,18 +159,37 @@ class TransferenciaServiceTest {
         verify(repository, times(1)).save(any(Transferencia.class));
     }
 
+        @Test
+        void testDeletarTransferencia() throws TransferenciaNaoEncontradaException {
+            // Mock data
+            Long transferenciaId = 123L;
 
+            // Mock the repository behavior
+            when(repository.findById(transferenciaId)).thenReturn(Optional.of(new Transferencia()));
+            doNothing().when(repository).deleteById(transferenciaId);
 
+            // Invoke the service method
+            transferenciaService.deletarTransferencia(transferenciaId);
 
-    @Test
-    void testDeletarTransferencia() throws TransferenciaNaoEncontradaException {
-        // Mock data
-        Long id = 1L;
+            // Verify the repository method was called
+            verify(repository).findById(transferenciaId);
+            verify(repository).deleteById(transferenciaId);
+        }
 
-        // Invoke the service method
-        transferenciaService.deletarTransferencia(id);
+        @Test
+        void testDeletarTransferencia_ThrowsException() {
+            // Mock data
+            Long transferenciaId = 123L;
 
-        // Verify the repository method was called
-        verify(repository, times(1)).deleteById(id);
-    }
+            // Mock the repository behavior
+            when(repository.findById(transferenciaId)).thenReturn(Optional.empty());
+
+            // Verify that TransferenciaNaoEncontradaException is thrown
+            assertThrows(TransferenciaNaoEncontradaException.class,
+                    () -> transferenciaService.deletarTransferencia(transferenciaId));
+
+            // Verify the repository method was called
+            verify(repository).findById(transferenciaId);
+        }
+
 }
